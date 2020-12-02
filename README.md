@@ -1,7 +1,7 @@
 ## Setup
 
 1. `npm install`
-2. `npm install -g elm`
+2. `npm install -g elm elm-format`
 3. add `elm-format` integration to your editor [instructions here](https://github.com/avh4/elm-format#editor-integration)
 4. start dev server: `npm run dev`
 
