@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (sandbox)
 import Html exposing (..)
+import Html.Events exposing (onInput)
 
 
 
@@ -24,6 +25,14 @@ type alias Model =
     String
 
 
+
+-- Msg
+
+
+type Msg
+    = NameAdded String
+
+
 init : Model
 init =
     "Hello World!"
@@ -33,15 +42,18 @@ init =
 -- Update
 
 
-update : msg -> Model -> Model
-update msg model =
-    model
+update : Msg -> Model -> Model
+update (NameAdded name) model =
+    name
 
 
 
 -- View
 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
-    h1 [] [ text model ]
+    div []
+        [ p [] [ text model ]
+        , input [ onInput NameAdded ] []
+        ]
