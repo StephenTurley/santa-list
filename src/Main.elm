@@ -128,28 +128,28 @@ viewNamesList model =
 
 viewName : Model -> Person -> Html Msg
 viewName model person =
-    let
-        name =
-            person.name
+    li [ onClick (NameSelected person.name) ]
+        ([ p [] [ text person.name ] ] ++ viewItems person ++ viewItemInput model person)
 
-        itemInput =
-            if name == model.selected then
-                [ input [ value model.itemToAdd, onInput ItemToAddChanged ] []
-                , button [ onClick (ItemAdded name) ] [ text "Add Item" ]
-                ]
 
-            else
-                []
+viewItemInput : Model -> Person -> List (Html Msg)
+viewItemInput model person =
+    if person.name == model.selected then
+        [ input [ value model.itemToAdd, onInput ItemToAddChanged ] []
+        , button [ onClick (ItemAdded person.name) ] [ text "Add Item" ]
+        ]
 
-        items =
-            [ person.items
-                |> List.map .name
-                |> List.map viewItem
-                |> ul []
-            ]
-    in
-    li [ onClick (NameSelected name) ]
-        ([ p [] [ text name ] ] ++ items ++ itemInput)
+    else
+        []
+
+
+viewItems : Person -> List (Html Msg)
+viewItems person =
+    [ person.items
+        |> List.map .name
+        |> List.map viewItem
+        |> ul []
+    ]
 
 
 viewItem : String -> Html Msg
