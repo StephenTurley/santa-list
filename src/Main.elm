@@ -4,7 +4,6 @@ import Browser exposing (sandbox)
 import Html exposing (..)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onClick, onInput)
-import Set exposing (Set)
 
 
 
@@ -25,7 +24,8 @@ main =
 
 type alias Model =
     { nameToAdd : String
-    , names : List Person
+    , itemToAdd : String
+    , people : List Person
     , selected : String
     }
 
@@ -44,12 +44,15 @@ type Msg
     = NameAdded
     | NameToAddChanged String
     | NameSelected String
+    | ItemToAddChanged String
+    | ItemAdded String
 
 
 init : Model
 init =
     { nameToAdd = ""
-    , names = []
+    , itemToAdd = ""
+    , people = []
     , selected = ""
     }
 
@@ -66,13 +69,32 @@ update msg model =
                 person name =
                     { name = name, items = [] }
             in
-            { model | names = model.names ++ [ person model.nameToAdd ], nameToAdd = "" }
+            { model | people = model.people ++ [ person model.nameToAdd ], nameToAdd = "" }
 
         NameToAddChanged name ->
             { model | nameToAdd = name }
 
         NameSelected name ->
             { model | selected = name }
+
+        ItemToAddChanged item ->
+            { model | itemToAdd = item }
+
+        ItemAdded name ->
+            let
+                uPeople =
+                    List.map (addItem name model.itemToAdd) model.people
+            in
+            { model | people = uPeople, itemToAdd = "" }
+
+
+addItem : String -> String -> Person -> Person
+addItem name item person =
+    if name == person.name then
+        { person | items = person.items ++ [ item ] }
+
+    else
+        person
 
 
 
@@ -90,19 +112,19 @@ view model =
 
 namesList : Model -> Html Msg
 namesList model =
-    model.names
+    model.people
         |> List.map .name
-        |> List.map (nameItem model.selected)
+        |> List.map (nameItem model)
         |> ul []
 
 
-nameItem : String -> String -> Html Msg
-nameItem selected name =
+nameItem : Model -> String -> Html Msg
+nameItem model name =
     let
         itemInput =
-            if name == selected then
-                [ input [] []
-                , button [] [ text "Add Item" ]
+            if name == model.selected then
+                [ input [ value model.itemToAdd, onInput ItemToAddChanged ] []
+                , button [ onClick (ItemAdded name) ] [ text "Add Item" ]
                 ]
 
             else
