@@ -14,4 +14,9 @@
 5. mark person as naughty or nice
 6. remove item
 
+## Resources
 
+* [single page app example](https://github.com/rtfeldman/elm-spa-example)
+* [elm docs](https://guide.elm-lang.org/)
+* [Elm In Action](https://www.manning.com/books/elm-in-action)
+* [NoRedInk Blog](https://blog.noredink.com/)
