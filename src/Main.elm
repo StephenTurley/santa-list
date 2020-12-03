@@ -25,8 +25,14 @@ main =
 
 type alias Model =
     { nameToAdd : String
-    , names : Set String
+    , names : List Person
     , selected : String
+    }
+
+
+type alias Person =
+    { name : String
+    , items : List String
     }
 
 
@@ -43,7 +49,7 @@ type Msg
 init : Model
 init =
     { nameToAdd = ""
-    , names = Set.empty
+    , names = []
     , selected = ""
     }
 
@@ -56,7 +62,11 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         NameAdded ->
-            { model | names = Set.insert model.nameToAdd model.names, nameToAdd = "" }
+            let
+                person name =
+                    { name = name, items = [] }
+            in
+            { model | names = model.names ++ [ person model.nameToAdd ], nameToAdd = "" }
 
         NameToAddChanged name ->
             { model | nameToAdd = name }
@@ -81,7 +91,7 @@ view model =
 namesList : Model -> Html Msg
 namesList model =
     model.names
-        |> Set.toList
+        |> List.map .name
         |> List.map (nameItem model.selected)
         |> ul []
 
