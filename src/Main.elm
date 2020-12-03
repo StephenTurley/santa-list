@@ -52,6 +52,7 @@ type Msg
     | NameSelected String
     | ItemToAddChanged String
     | ItemAdded String
+    | TogglePurchased Person Item
 
 
 init : Model
@@ -92,18 +93,45 @@ update msg model =
                     { name = model.itemToAdd, isPurchased = False }
 
                 uPeople =
-                    List.map (addItem name item) model.people
+                    List.map (updatePerson (addItem item) name) model.people
             in
             { model | people = uPeople, itemToAdd = "" }
 
+        TogglePurchased person item ->
+            let
+                uPeople =
+                    model.people
+                        |> List.map (updatePerson (togglePurchased item) person.name)
+            in
+            { model | people = uPeople }
 
-addItem : String -> Item -> Person -> Person
-addItem name item person =
+
+updatePerson : (Person -> Person) -> String -> Person -> Person
+updatePerson updater name person =
     if name == person.name then
-        { person | items = person.items ++ [ item ] }
+        updater person
 
     else
         person
+
+
+addItem : Item -> Person -> Person
+addItem item person =
+    { person | items = person.items ++ [ item ] }
+
+
+togglePurchased : Item -> Person -> Person
+togglePurchased itemToFind person =
+    let
+        toggleItem =
+            \i ->
+                if itemToFind.name == i.name then
+                    { i | isPurchased = not i.isPurchased }
+
+                else
+                    i
+    in
+    { person | items = List.map toggleItem person.items }
 
 
 
@@ -146,12 +174,11 @@ viewItemInput model person =
 viewItems : Person -> List (Html Msg)
 viewItems person =
     [ person.items
-        |> List.map .name
-        |> List.map viewItem
+        |> List.map (viewItem person)
         |> ul []
     ]
 
 
-viewItem : String -> Html Msg
-viewItem item =
-    li [] [ p [] [ text item ] ]
+viewItem : Person -> Item -> Html Msg
+viewItem person item =
+    li [ onClick (TogglePurchased person item) ] [ p [] [ text item.name ] ]
