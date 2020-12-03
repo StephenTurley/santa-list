@@ -4,6 +4,7 @@ import Browser exposing (sandbox)
 import Html exposing (..)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onClick, onInput)
+import Set exposing (Set)
 
 
 
@@ -24,7 +25,7 @@ main =
 
 type alias Model =
     { nameToAdd : String
-    , names : List String
+    , names : Set String
     , selected : Maybe String
     }
 
@@ -42,7 +43,7 @@ type Msg
 init : Model
 init =
     { nameToAdd = ""
-    , names = []
+    , names = Set.empty
     , selected = Nothing
     }
 
@@ -55,7 +56,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         NameAdded ->
-            { model | names = model.names ++ [ model.nameToAdd ], nameToAdd = "" }
+            { model | names = Set.insert model.nameToAdd model.names, nameToAdd = "" }
 
         NameToAddChanged name ->
             { model | nameToAdd = name }
@@ -77,11 +78,14 @@ view model =
         ]
 
 
-namesList : List String -> Html Msg
+namesList : Set String -> Html Msg
 namesList names =
     let
         nameItem : String -> Html Msg
         nameItem name =
             li [ onClick (NameSelected name) ] [ text name ]
     in
-    ul [] <| List.map nameItem names
+    names
+        |> Set.toList
+        |> List.map nameItem
+        |> ul []
