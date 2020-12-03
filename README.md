@@ -16,6 +16,7 @@
 
 ## Resources
 
+* [elm todomvc](https://github.com/evancz/elm-todomvc)
 * [single page app example](https://github.com/rtfeldman/elm-spa-example)
 * [elm docs](https://guide.elm-lang.org/)
 * [Elm In Action](https://www.manning.com/books/elm-in-action)
