@@ -11,7 +11,7 @@
 1. add a person
 2. add items for a person Item has a name
 3. mark item as purchased
-4. remove item
-5. add URL for item
+5. mark person as naughty or nice
+6. remove item
 
 
