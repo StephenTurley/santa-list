@@ -26,7 +26,7 @@ main =
 type alias Model =
     { nameToAdd : String
     , names : Set String
-    , selected : Maybe String
+    , selected : String
     }
 
 
@@ -44,7 +44,7 @@ init : Model
 init =
     { nameToAdd = ""
     , names = Set.empty
-    , selected = Nothing
+    , selected = ""
     }
 
 
@@ -62,7 +62,7 @@ update msg model =
             { model | nameToAdd = name }
 
         NameSelected name ->
-            { model | selected = Just name }
+            { model | selected = name }
 
 
 
@@ -72,20 +72,31 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ namesList model.names
+        [ namesList model
         , input [ onInput NameToAddChanged, value model.nameToAdd ] []
         , button [ onClick NameAdded ] [ text "Save Name" ]
         ]
 
 
-namesList : Set String -> Html Msg
-namesList names =
-    let
-        nameItem : String -> Html Msg
-        nameItem name =
-            li [ onClick (NameSelected name) ] [ text name ]
-    in
-    names
+namesList : Model -> Html Msg
+namesList model =
+    model.names
         |> Set.toList
-        |> List.map nameItem
+        |> List.map (nameItem model.selected)
         |> ul []
+
+
+nameItem : String -> String -> Html Msg
+nameItem selected name =
+    let
+        itemInput =
+            if name == selected then
+                [ input [] []
+                , button [] [ text "Add Item" ]
+                ]
+
+            else
+                []
+    in
+    li [ onClick (NameSelected name) ]
+        ([ p [] [ text name ] ] ++ itemInput)
