@@ -6,13 +6,12 @@
 4. start dev server: `npm run dev`
 
 
-## Backlog
+## Features
 
-* add a person
-* save the person to a web service
-* add items for a person Item has a name
-* mark item as purchased
-* remove item
-* add URL for item
+1. add a person
+2. add items for a person Item has a name
+3. mark item as purchased
+4. remove item
+5. add URL for item
 
 
