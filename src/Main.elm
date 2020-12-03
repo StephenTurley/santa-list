@@ -74,7 +74,7 @@ view model =
     div []
         [ namesList model
         , input [ onInput NameToAddChanged, value model.nameToAdd ] []
-        , button [ onClick NameAdded ] [ text "Save Name" ]
+        , button [ onClick NameAdded ] [ text "Add Name" ]
         ]
 
 
