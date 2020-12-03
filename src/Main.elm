@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (sandbox)
 import Html exposing (..)
+import Html.Attributes exposing (value)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -23,7 +24,7 @@ main =
 
 type alias Model =
     { nameToAdd : String
-    , name : String
+    , names : List String
     }
 
 
@@ -38,7 +39,7 @@ type Msg
 
 init : Model
 init =
-    { nameToAdd = "", name = "" }
+    { nameToAdd = "", names = [] }
 
 
 
@@ -49,7 +50,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         NameAdded ->
-            { model | name = model.nameToAdd }
+            { model | names = model.names ++ [ model.nameToAdd ], nameToAdd = "" }
 
         NameToAddChanged name ->
             { model | nameToAdd = name }
@@ -62,7 +63,17 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ p [] [ text model.name ]
-        , input [ onInput NameToAddChanged ] []
+        [ namesList model.names
+        , input [ onInput NameToAddChanged, value model.nameToAdd ] []
         , button [ onClick NameAdded ] [ text "Save Name" ]
         ]
+
+
+namesList : List String -> Html Msg
+namesList names =
+    let
+        nameItem : String -> Html Msg
+        nameItem name =
+            li [] [ text name ]
+    in
+    ul [] <| List.map nameItem names
