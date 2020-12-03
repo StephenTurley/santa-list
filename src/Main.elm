@@ -25,6 +25,7 @@ main =
 type alias Model =
     { nameToAdd : String
     , names : List String
+    , selected : Maybe String
     }
 
 
@@ -35,11 +36,15 @@ type alias Model =
 type Msg
     = NameAdded
     | NameToAddChanged String
+    | NameSelected String
 
 
 init : Model
 init =
-    { nameToAdd = "", names = [] }
+    { nameToAdd = ""
+    , names = []
+    , selected = Nothing
+    }
 
 
 
@@ -54,6 +59,9 @@ update msg model =
 
         NameToAddChanged name ->
             { model | nameToAdd = name }
+
+        NameSelected name ->
+            { model | selected = Just name }
 
 
 
@@ -74,6 +82,6 @@ namesList names =
     let
         nameItem : String -> Html Msg
         nameItem name =
-            li [] [ text name ]
+            li [ onClick (NameSelected name) ] [ text name ]
     in
     ul [] <| List.map nameItem names
