@@ -92,18 +92,17 @@ update msg model =
                 item =
                     { name = model.itemToAdd, isPurchased = False }
 
-                uPeople =
-                    List.map (updatePerson (addItem item) name) model.people
+                itemAdder =
+                    updatePerson (addItem item) name
             in
-            { model | people = uPeople, itemToAdd = "" }
+            { model | people = List.map itemAdder model.people, itemToAdd = "" }
 
         TogglePurchased person item ->
             let
-                uPeople =
-                    model.people
-                        |> List.map (updatePerson (togglePurchased item) person.name)
+                toggler =
+                    updatePerson (togglePurchased item) person.name
             in
-            { model | people = uPeople }
+            { model | people = List.map toggler model.people }
 
 
 updatePerson : (Person -> Person) -> String -> Person -> Person
@@ -115,6 +114,15 @@ updatePerson updater name person =
         person
 
 
+updateItem : (Item -> Item) -> String -> Item -> Item
+updateItem updater name item =
+    if item.name == name then
+        updater item
+
+    else
+        item
+
+
 addItem : Item -> Person -> Person
 addItem item person =
     { person | items = person.items ++ [ item ] }
@@ -124,12 +132,7 @@ togglePurchased : Item -> Person -> Person
 togglePurchased itemToFind person =
     let
         toggleItem =
-            \i ->
-                if itemToFind.name == i.name then
-                    { i | isPurchased = not i.isPurchased }
-
-                else
-                    i
+            updateItem (\i -> { i | isPurchased = not i.isPurchased }) itemToFind.name
     in
     { person | items = List.map toggleItem person.items }
 
