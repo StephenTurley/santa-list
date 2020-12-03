@@ -104,23 +104,25 @@ addItem name item person =
 view : Model -> Html Msg
 view model =
     div []
-        [ namesList model
+        [ viewNamesList model
         , input [ onInput NameToAddChanged, value model.nameToAdd ] []
         , button [ onClick NameAdded ] [ text "Add Name" ]
         ]
 
 
-namesList : Model -> Html Msg
-namesList model =
+viewNamesList : Model -> Html Msg
+viewNamesList model =
     model.people
-        |> List.map .name
-        |> List.map (nameItem model)
+        |> List.map (viewName model)
         |> ul []
 
 
-nameItem : Model -> String -> Html Msg
-nameItem model name =
+viewName : Model -> Person -> Html Msg
+viewName model person =
     let
+        name =
+            person.name
+
         itemInput =
             if name == model.selected then
                 [ input [ value model.itemToAdd, onInput ItemToAddChanged ] []
@@ -129,6 +131,14 @@ nameItem model name =
 
             else
                 []
+
+        items =
+            [ ul [] (List.map viewItem person.items) ]
     in
     li [ onClick (NameSelected name) ]
-        ([ p [] [ text name ] ] ++ itemInput)
+        ([ p [] [ text name ] ] ++ items ++ itemInput)
+
+
+viewItem : String -> Html Msg
+viewItem item =
+    li [] [ p [] [ text item ] ]
