@@ -2,6 +2,8 @@ module Main exposing (..)
 
 import Browser exposing (sandbox)
 import Html exposing (..)
+import Html.Attributes exposing (value)
+import Html.Events exposing (onClick, onInput)
 
 
 
@@ -21,27 +23,49 @@ main =
 
 
 type alias Model =
-    String
+    { people : List String
+    , nameToAdd : String
+    }
 
 
 init : Model
 init =
-    "Hello World!"
+    { people = []
+    , nameToAdd = ""
+    }
+
+
+
+-- Msg
+
+
+type Msg
+    = NameToAddChanged String
+    | AddPerson
 
 
 
 -- Update
 
 
-update : msg -> Model -> Model
+update : Msg -> Model -> Model
 update msg model =
-    model
+    case msg of
+        NameToAddChanged name ->
+            { model | nameToAdd = name }
+
+        AddPerson ->
+            { model | people = model.people ++ [ model.nameToAdd ], nameToAdd = "" }
 
 
 
 -- View
 
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
-    h1 [] [ text model ]
+    div []
+        [ ul [] (List.map (\p -> li [] [ text p ]) model.people)
+        , input [ value model.nameToAdd, onInput NameToAddChanged ] []
+        , button [ onClick AddPerson ] [ text "Add Person" ]
+        ]
