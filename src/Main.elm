@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (sandbox)
 import Html exposing (..)
-import Html.Attributes exposing (value)
+import Html.Attributes exposing (classList, value)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -184,4 +184,8 @@ viewItems person =
 
 viewItem : Person -> Item -> Html Msg
 viewItem person item =
-    li [ onClick (TogglePurchased person item) ] [ p [] [ text item.name ] ]
+    li
+        [ classList [ ( "purchased", item.isPurchased ) ]
+        , onClick (TogglePurchased person item)
+        ]
+        [ p [] [ text item.name ] ]
