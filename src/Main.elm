@@ -32,7 +32,13 @@ type alias Model =
 
 type alias Person =
     { name : String
-    , items : List String
+    , items : List Item
+    }
+
+
+type alias Item =
+    { name : String
+    , isPurchased : Bool
     }
 
 
@@ -82,13 +88,16 @@ update msg model =
 
         ItemAdded name ->
             let
+                item =
+                    { name = model.itemToAdd, isPurchased = False }
+
                 uPeople =
-                    List.map (addItem name model.itemToAdd) model.people
+                    List.map (addItem name item) model.people
             in
             { model | people = uPeople, itemToAdd = "" }
 
 
-addItem : String -> String -> Person -> Person
+addItem : String -> Item -> Person -> Person
 addItem name item person =
     if name == person.name then
         { person | items = person.items ++ [ item ] }
@@ -133,7 +142,11 @@ viewName model person =
                 []
 
         items =
-            [ ul [] (List.map viewItem person.items) ]
+            [ person.items
+                |> List.map .name
+                |> List.map viewItem
+                |> ul []
+            ]
     in
     li [ onClick (NameSelected name) ]
         ([ p [] [ text name ] ] ++ items ++ itemInput)
